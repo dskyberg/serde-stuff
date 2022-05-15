@@ -16,13 +16,11 @@
 use serde::{Deserialize, Serialize};
 use serde::{Deserializer, Serializer};
 
-/// Serialize a `[u8]` byte array with Bse64
 pub fn serialize<S: Serializer>(v: &[u8], s: S) -> Result<S::Ok, S::Error> {
     let base64 = base64::encode_config(v, base64::URL_SAFE);
     String::serialize(&base64, s)
 }
 
-/// Deserialize a Base64 string to a `[u8]` byte array
 pub fn deserialize<'de, D: Deserializer<'de>>(d: D) -> Result<Vec<u8>, D::Error> {
     let base64 = String::deserialize(d)?;
     base64::decode_config(base64.as_bytes(), base64::URL_SAFE).map_err(serde::de::Error::custom)
