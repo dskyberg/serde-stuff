@@ -1,0 +1,21 @@
+[package]
+name = "serde-stuff"
+version = "0.2.0"
+description = "Commonly used Serde utilities"
+edition = "2021"
+license = "MIT or Apache-2.0"
+authors = ["David Skyberg <davidskybeg@gmail.com"]
+documentation = "https://docs.rs/crate/serde-stuff"
+repository = "https://github.com/dskyberg/serde-stuff"
+homepage = "https://github.com/dskyberg/serde-stuff"
+keywords = ["serde"]
+readme = "README.md"
+
+[dependencies]
+base64 = "^0.13"
+serde = {version = "^1", features = ["derive"] }
+void = "^1"
+
+[dev-dependencies]
+serde_json = "1.0.81"
+serde_with = "1.13.0"
