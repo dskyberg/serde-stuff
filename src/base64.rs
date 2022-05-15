@@ -2,6 +2,17 @@
 //!
 //! #Examples
 //!
+//! ```rust
+//! use serde::{Deserialize, Serialize};
+//! use serde_json;
+//!
+//! #[derive(Serialize, Deserialize, PartialEq, Debug)]
+//! pub struct Outer {
+//!     #[serde(with = "serde_stuff::base64")]
+//!     pub item: Vec<u8>,
+//! }
+//! ```
+
 use serde::{Deserialize, Serialize};
 use serde::{Deserializer, Serializer};
 

@@ -6,15 +6,15 @@
 //! # Examples
 //!
 //! ```rust
-//! use serde::{Deserialize, Serialize};
-//! #[derive(Debug, Serialize, Deserialize)]
+//! use serde::{Deserialize};
+//! #[derive(Debug, Deserialize)]
 //! pub struct Inner {
 //!     pub item: String
 //! }
 //!
-//! #[derive(Debug, Serialize, Deserialize)]
+//! #[derive(Debug, Deserialize)]
 //! pub struct Outer {
-//!     #[serde(with = "crate::option_string_or_struct")]
+//!     #[serde(with = "serde_stuff::vec_or_one")]
 //!     pub inners: Vec<Inner>
 //! }
 //! ```

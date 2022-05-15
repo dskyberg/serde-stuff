@@ -5,10 +5,9 @@
 //! # Examples
 //!
 //! ```rust
-//! use super::*;
 //! use serde::Deserialize;
-//! use serde_json;
 //! use std::str::FromStr;
+//! use void::Void;
 //!
 //! #[derive(Debug, Deserialize)]
 //! pub struct Inner {
@@ -27,7 +26,7 @@
 //!
 //! #[derive(Debug, Deserialize)]
 //! pub struct Outer {
-//!     #[serde(deserialize_with = "serde_stuff::option_string_or_struct::deserialize")]
+//!     #[serde(with = "serde_stuff::option_string_or_struct")]
 //!     pub inner: Option<Inner>,
 //!     pub other: String,
 //! }
