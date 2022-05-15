@@ -49,6 +49,8 @@ pub fn deserialize<'de, D: de::Deserializer<'de>, T: Deserialize<'de>>(
     }
 }
 
+//TODO: serialize a Vec<T> of length 1 to T
+
 #[cfg(test)]
 mod tests {
     use serde::Deserialize;
