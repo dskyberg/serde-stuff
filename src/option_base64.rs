@@ -1,8 +1,19 @@
-//! Base64 <-> `Option<Vec<u8>>`
+//! Serialize and Deserialize a `Option<Vec<u8>>` to a [base64] string.
+//! Note: The attribute must be decorated with `default`, or it will not
+//! be properly serialized.  You will get a missing attribute error from Serde.
 //!
-//! Serialize an `Option<Vec<u8>>` to a Base64 string
-//! Deserialize a Base64 string to an `Option<Vec<u8>>`
-
+//! #Examples
+//!
+//! ```rust
+//! use serde::{Deserialize, Serialize};
+//! use serde_json;
+//!
+//! #[derive(Serialize, Deserialize, PartialEq, Debug)]
+//! pub struct Outer {
+//!     #[serde(default, with = "serde_stuff::optiopn_base64")]
+//!     pub item: Vec<u8>,
+//! }
+//! ```
 use serde::{Deserialize, Serialize};
 use serde::{Deserializer, Serializer};
 
@@ -36,7 +47,11 @@ mod tests {
 
     #[derive(Serialize, Deserialize, PartialEq, Debug)]
     pub struct Outer {
-        #[serde(with = "crate::option_base64", skip_serializing_if = "Option::is_none")]
+        #[serde(
+            default,
+            with = "crate::option_base64",
+            skip_serializing_if = "Option::is_none"
+        )]
         pub item: Option<Vec<u8>>,
         pub other: String,
     }
@@ -89,21 +104,19 @@ mod tests {
         let result: Outer = serde_json::from_str(&model).expect("Oops!");
         assert_eq!(&outer, &result);
     }
-    /*
-    NOT WORKING!!!
-        #[test]
-        fn deserialize_none() {
-            let model = r#"{
+
+    #[test]
+    fn deserialize_none() {
+        let model = r#"{
                 "other": "value"
             }"#;
 
-            let outer = Outer {
-                item: None,
-                other: "value".to_string(),
-            };
+        let outer = Outer {
+            item: None,
+            other: "value".to_string(),
+        };
 
-            let result: Outer = serde_json::from_str(model).expect("Oops!");
-            assert_eq!(&outer, &result);
-        }
-    */
+        let result: Outer = serde_json::from_str(model).expect("Oops!");
+        assert_eq!(&outer, &result);
+    }
 }
