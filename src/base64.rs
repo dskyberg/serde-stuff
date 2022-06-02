@@ -17,13 +17,14 @@ use serde::{Deserialize, Serialize};
 use serde::{Deserializer, Serializer};
 
 pub fn serialize<S: Serializer>(v: &[u8], s: S) -> Result<S::Ok, S::Error> {
-    let base64 = base64::encode_config(v, base64::URL_SAFE);
+    let base64 = base64::encode_config(v, base64::URL_SAFE_NO_PAD);
     String::serialize(&base64, s)
 }
 
 pub fn deserialize<'de, D: Deserializer<'de>>(d: D) -> Result<Vec<u8>, D::Error> {
     let base64 = String::deserialize(d)?;
-    base64::decode_config(base64.as_bytes(), base64::URL_SAFE).map_err(serde::de::Error::custom)
+    base64::decode_config(base64.as_bytes(), base64::URL_SAFE_NO_PAD)
+        .map_err(serde::de::Error::custom)
 }
 
 #[cfg(test)]
@@ -36,7 +37,7 @@ mod tests {
         #[serde(with = "crate::base64")]
         pub item: Vec<u8>,
     }
-    const TEST_B64: &str = "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=";
+    const TEST_B64: &str = "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8";
     const TEST_VEC: [u8; 32] = [
         0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
         25, 26, 27, 28, 29, 30, 31,
