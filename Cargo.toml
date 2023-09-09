@@ -1,6 +1,6 @@
 [package]
 name = "serde-stuff"
-version = "0.2.1"
+version = "0.2.2"
 description = "Commonly used Serde utilities"
 edition = "2021"
 license = "MIT or Apache-2.0"
@@ -12,10 +12,10 @@ keywords = ["serde"]
 readme = "README.md"
 
 [dependencies]
-base64 = "^0.13"
-serde = {version = "^1", features = ["derive"] }
-void = "^1"
+base64 = "0.21.3"
+serde = { version = "1.0.188", features = ["derive"] }
+void = "1.0.2"
 
 [dev-dependencies]
-serde_json = "1.0.81"
-serde_with = "1.13.0"
+serde_json = "1.0.105"
+serde_with = "3.3.0"

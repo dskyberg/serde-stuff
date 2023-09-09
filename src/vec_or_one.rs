@@ -30,7 +30,7 @@
 //! }
 //! ```
 
-use serde::{self, de, Deserialize};
+use serde::{self, de, Deserialize, Serialize, Serializer};
 
 #[derive(Deserialize, Debug)]
 #[serde(untagged)] // This is the magic. see https://serde.rs/enum-representations.html
@@ -49,29 +49,34 @@ pub fn deserialize<'de, D: de::Deserializer<'de>, T: Deserialize<'de>>(
     }
 }
 
-//TODO: serialize a Vec<T> of length 1 to T
+pub fn serialize<S: Serializer, T: Serialize>(v: &Vec<T>, s: S) -> Result<S::Ok, S::Error> {
+    match v.len() {
+        1 => T::serialize(v.first().unwrap(), s),
+        _ => Vec::<T>::serialize(v, s),
+    }
+}
 
 #[cfg(test)]
 mod tests {
-    use serde::Deserialize;
+    use serde::{Deserialize, Serialize};
     use serde_json;
 
-    #[derive(Debug, Deserialize, PartialEq)]
+    #[derive(Debug, Deserialize, PartialEq, Serialize)]
     pub struct Inner {
         pub item: String,
     }
 
-    #[derive(Debug, Deserialize, PartialEq)]
+    #[derive(Debug, Deserialize, PartialEq, Serialize)]
     pub struct Outer {
         #[serde(with = "crate::vec_or_one")]
         pub inners: Vec<Inner>,
     }
 
     #[test]
-    fn single_test() {
+    fn deserialize_single_test() {
         let test1 = r#"
         {
-            "inners": { 
+            "inners": {
                 "item": "value"
             }
         }"#;
@@ -86,11 +91,11 @@ mod tests {
     }
 
     #[test]
-    fn multple_test() {
+    fn deserialize_multple_test() {
         let test1 = r#"
         {
             "inners": [
-                { 
+                {
                 "item": "value"
                 },
                 {
@@ -111,5 +116,39 @@ mod tests {
 
         let result: Outer = serde_json::from_str(test1).expect("Oops!");
         assert_eq!(&outer, &result);
+    }
+
+    #[test]
+    fn serialize_one_test() {
+        let json = r##"{"inners":{"item":"value 1"}}"##;
+        let outer = Outer {
+            inners: vec![Inner {
+                item: "value 1".to_string(),
+            }],
+        };
+        let result = serde_json::from_str::<Outer>(json);
+        assert!(result.is_ok());
+        assert_eq!(result.unwrap(), outer);
+    }
+
+    #[test]
+    fn serialize_multiple_test() {
+        let json = r##"{"inners":[{"item":"value 1"},{"item":"value 2"},{"item":"value 3"}]}"##;
+        let outer = Outer {
+            inners: vec![
+                Inner {
+                    item: "value 1".to_string(),
+                },
+                Inner {
+                    item: "value 2".to_string(),
+                },
+                Inner {
+                    item: "value 3".to_string(),
+                },
+            ],
+        };
+        let result = serde_json::to_string(&outer);
+        assert!(result.is_ok());
+        assert_eq!(result.unwrap(), json);
     }
 }

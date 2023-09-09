@@ -13,6 +13,7 @@
 pub mod base64;
 pub mod option_base64;
 pub mod option_string_or_struct;
+pub mod option_vec_or_one;
 pub mod string_or_struct;
 pub mod vec_or_one;
 
