@@ -12,8 +12,8 @@
 //!
 //! #[derive(Serialize, Deserialize, PartialEq, Debug)]
 //! pub struct Outer {
-//!     #[serde(default, with = "serde_stuff::optiopn_base64")]
-//!     pub item: Vec<u8>,
+//!     #[serde(default, with = "serde_stuff::option_base64")]
+//!     pub item: Option<Vec<u8>>,
 //! }
 //! ```
 
